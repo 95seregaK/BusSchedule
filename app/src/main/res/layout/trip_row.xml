@@ -23,7 +23,7 @@
         tools:text="7:00" />
 
     <TextView
-        android:id="@+id/row_bus_stop_name"
+        android:id="@+id/row_route_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"

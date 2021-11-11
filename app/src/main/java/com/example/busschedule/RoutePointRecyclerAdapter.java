@@ -8,11 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 public class RoutePointRecyclerAdapter extends RecyclerView.Adapter<RoutePointRecyclerAdapter.ViewHolder> {
 
-    private List<RoutePoint> routePoints;
+    private BusRoute.Trip trip;
 
     @NonNull
     @Override
@@ -24,18 +22,20 @@ public class RoutePointRecyclerAdapter extends RecyclerView.Adapter<RoutePointRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final RoutePoint routePoint = routePoints.get(position);
-        holder.time.setText(routePoint.getTime());
-        holder.name.setText(routePoint.getName());
+        final String name = trip.getBusStopAt(position).getName();
+        final String time = trip.getTimes().get(position).toString();
+        holder.name.setText(name);
+        holder.time.setText(time);
     }
 
     @Override
     public int getItemCount() {
-        return routePoints.size();
+        return trip == null ? 0 : trip.pointsNumber();
     }
 
-    public void setContent(List<RoutePoint> routePointList) {
-        routePoints = routePointList;
+    public void setContent(BusRoute.Trip trip) {
+        this.trip = trip;
+        notifyDataSetChanged();
     }
 
     static final class ViewHolder extends RecyclerView.ViewHolder {

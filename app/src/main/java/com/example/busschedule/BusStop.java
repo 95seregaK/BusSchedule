@@ -8,9 +8,15 @@ public class BusStop {
 
     public BusStop(String n) {
         name = n;
+        location = new Point(0, 0);
     }
 
     public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
         return name;
     }
 }
