@@ -17,7 +17,7 @@ public class RoutePointRecyclerAdapter extends RecyclerView.Adapter<RoutePointRe
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.bus_stop_row, parent,
+        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.route_point_row, parent,
                 false);
         return new ViewHolder(v);
     }

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "111802795231",
+    "firebase_url": "https://busschedule-bdbc4-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "busschedule-bdbc4",
+    "storage_bucket": "busschedule-bdbc4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111802795231:android:a585365ba185927d49156a",
+        "android_client_info": {
+          "package_name": "com.example.busschedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "111802795231-0tf9d31nj7l0kdn0coosh8hld37db5v8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB14mdzgadrxjOZ__S3nqTno4JgGFNhO98"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "111802795231-0tf9d31nj7l0kdn0coosh8hld37db5v8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
