@@ -20,8 +20,8 @@ public class BusRoute {
         return trips.get(i);
     }
 
-    public void addTrip(boolean[] daysOfWeek, List<Time> times) {
-        trips.add(new Trip(daysOfWeek, times));
+    public void addTrip(boolean[] daysOfWeek, List<Time> times, boolean active) {
+        trips.add(new Trip(this, daysOfWeek, times, active));
     }
 
     public boolean hasBusStop(BusStop busStop) {
@@ -32,13 +32,28 @@ public class BusRoute {
         return trips;
     }
 
-    public class Trip {
+    public int busStopIndex(BusStop stop) {
+        busStops.indexOf(null);
+        return busStops.indexOf(stop);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
+    public static class Trip {
+        //        @Json(ignore = true)
+        private final BusRoute fatherRoute;
         private boolean[] daysOfWeek;
         private List<Time> times;
+        private boolean active;
 
-        public Trip(boolean[] daysOfWeek, List<Time> times) {
+        private Trip(BusRoute fatherRoute, boolean[] daysOfWeek, List<Time> times, boolean active) {
+            this.fatherRoute = fatherRoute;
             this.daysOfWeek = daysOfWeek;
             this.times = times;
+            this.active = active;
         }
 
         public List<Time> getTimes() {
@@ -46,19 +61,27 @@ public class BusRoute {
         }
 
         public int pointsNumber() {
-            return busStops.size();
+            return fatherRoute.busStops.size();
         }
 
         public BusStop getBusStopAt(int position) {
-            return busStops.get(position);
+            return fatherRoute.busStops.get(position);
         }
 
         public String getRouteName() {
-            return name;
+            return fatherRoute.name;
         }
 
         public Time getTimeByBusStop(BusStop stop) {
-            return times.get(busStops.indexOf(stop));
+            return times.get(fatherRoute.busStops.indexOf(stop));
+        }
+
+        public int getNumber() {
+            return fatherRoute.trips.indexOf(this);
+        }
+
+        public boolean isActive() {
+            return active;
         }
     }
 }

@@ -1,31 +1,38 @@
 package com.example.busschedule;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.example.busschedule.json.JsonHelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
-    private Map<String, BusStop> busStops;
-    private List<BusRoute> routes;
+;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String STRING_ROUTE_NAME = "routeName";
+    public static final String STRING_TRIP_NUMBER = "tripNumber";
+    //private Map<String, BusStop> busStops;
+    // private List<BusRoute> routes;
     private Spinner spinnerDepartureStops, spinnerDestinationStops;
+    private RecyclerView tripRecyclerView;
+    private TripRecyclerAdapter tripRecyclerAdapter;
+    private View buttonFind, viewChooseDay;
+    private Schedule schedule;
+    private JsonHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,95 +41,92 @@ public class MainActivity extends AppCompatActivity {
 
         spinnerDepartureStops = (Spinner) findViewById(R.id.spinner_departure_stops);
         spinnerDestinationStops = (Spinner) findViewById(R.id.spinner_destination_stops);
-
-        //final RoutePointRecyclerView routePointRecyclerView = findViewById(R.id.route_points_list_view);
-        final TripRecyclerView tripRecyclerView = findViewById(R.id.trips_list_view);
+        buttonFind = findViewById(R.id.button_find);
+        viewChooseDay = findViewById(R.id.view_day_chooser);
+        viewChooseDay.setOnClickListener(this::onClick);
+        buttonFind.setOnClickListener(this/*::onClick*/);
+        //viewChooseDay.setOnClickListener(this::onClick);
+        tripRecyclerView = findViewById(R.id.trips_list_view);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         tripRecyclerView.setLayoutManager(llm);
-        //RoutePointRecyclerAdapter routePointRecyclerAdapter = new RoutePointRecyclerAdapter();
-        TripRecyclerAdapter tripRecyclerAdapter = new TripRecyclerAdapter();
+        tripRecyclerAdapter = new TripRecyclerAdapter();
         tripRecyclerView.setAdapter(tripRecyclerAdapter);
+        tripRecyclerAdapter.setOnItemClickListener(this::onItemClick);
+        schedule = Schedule.getInstance(this::onInfoUpdate);
+        helper = new JsonHelper();
         //tripRecyclerView.setAdapter(routePointRecyclerAdapter);
+        try {
+            String json = helper.readFromFile(this);
+            Log.d("BufferedWriter", json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                busStops = readBusStops(dataSnapshot.child("busStops"));
-                routes = readRouts(dataSnapshot.child("routes"));
-                //routePointRecyclerAdapter.setContent(routes.get(0).getTrip(0));
-                Object[] busStopArray = busStops.values().toArray();
-                ArrayAdapter spinnerAdapter = new ArrayAdapter<>(MainActivity.this,
-                        android.R.layout.simple_spinner_item, busStopArray);
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerDepartureStops.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        BusStop selectedBusStop = (BusStop) busStopArray[position];
-                        tripRecyclerAdapter.setContent(selectTrips(selectedBusStop, null), selectedBusStop);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
-                spinnerDepartureStops.setAdapter(spinnerAdapter);
-                spinnerDestinationStops.setAdapter(spinnerAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("databaseError", "loadPost:onCancelled", databaseError.toException());
-            }
-        };
-        database.addValueEventListener(postListener);
     }
 
-    private List<BusRoute.Trip> selectTrips(BusStop departure, @Nullable BusStop destination) {
+    private void onInfoUpdate(List<BusStop> stops, List<BusRoute> busRoutes) {
+        ArrayAdapter spinnerAdapter = new ArrayAdapter(MainActivity.this,
+                android.R.layout.simple_spinner_item, schedule.getBusStops().toArray());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDepartureStops.setAdapter(spinnerAdapter);
+        spinnerDestinationStops.setAdapter(spinnerAdapter);
+        String jsonString = schedule.getJSON();
+    }
+
+    private List<BusRoute.Trip> selectTrips(@NonNull BusStop departure, @Nullable BusStop
+            destination) {
         List<BusRoute.Trip> selectedTrips = new ArrayList<>();
-        for (BusRoute route : routes) {
-            if (route.hasBusStop(departure)) {
-                selectedTrips.addAll(route.getAllTrips());
+        for (BusRoute route : schedule.getRoutes()) {
+            if (route.busStopIndex(departure) < route.busStopIndex(destination)) {
+                for (BusRoute.Trip trip : route.getAllTrips()) {
+                    if (trip.isActive()) selectedTrips.add(trip);
+                }
             }
         }
         return selectedTrips;
     }
 
-    private List<BusRoute> readRouts(DataSnapshot routesSnapshot) {
-        final List<BusRoute> routes = new ArrayList<>();
-        for (DataSnapshot routeSnapshot : routesSnapshot.getChildren()) {
-            //Log.d("dataSnapshot.getChild", routeSnapshot.getKey());
-            String name = routeSnapshot.child("name").getValue(String.class);
-            List<BusStop> stops = new ArrayList<>();
-            for (DataSnapshot stopSnapshot : routeSnapshot.child("stops").getChildren()) {
-                stops.add(busStops.get(stopSnapshot.getValue(String.class)));
-            }
-            BusRoute route = new BusRoute(name, stops);
-            for (DataSnapshot tripSnapshot : routeSnapshot.child("trips").getChildren()) {
-                int i = 0;
-                boolean[] daysOfWeek = new boolean[7];
-                for (DataSnapshot dayOfWeekSnapshot : tripSnapshot.child("daysOfWeek").getChildren()) {
-                    daysOfWeek[i] = dayOfWeekSnapshot.getValue(Boolean.class);
-                    i++;
-                }
-                List<Time> times = new ArrayList<>();
-                for (DataSnapshot timeSnapshot : tripSnapshot.child("time").getChildren()) {
-                    times.add(new Time(timeSnapshot.getValue(Long.class).intValue()));
-                }
-                route.addTrip(daysOfWeek, times);
-            }
-            routes.add(route);
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button_find:
+                updateTripsList();
+                break;
+            case R.id.view_day_chooser:
+                //Dialog dialog = new DatePickerDialog(this);
+                break;
         }
-        return routes;
     }
 
-    private Map<String, BusStop> readBusStops(DataSnapshot busStopsSnapshot) {
-        final Map<String, BusStop> busStops = new HashMap<>();
-        for (DataSnapshot busStopSnapshot : busStopsSnapshot.getChildren()) {
-            String name = (String) busStopSnapshot.child("name").getValue();
-            //long location = (Long) snapshot.child("location").getValue();
-            busStops.put(name, new BusStop(name));
+    public void onItemClick(View v, BusRoute.Trip trip) {
+        Log.d("onItemClick", trip.getTimeByBusStop((BusStop) spinnerDepartureStops.getSelectedItem()).toString());
+        Intent intent = new Intent(this, RoutPointsListActivity.class);
+        intent.putExtra(STRING_ROUTE_NAME, trip.getRouteName());
+        intent.putExtra(STRING_TRIP_NUMBER, trip.getNumber());
+        startActivity(intent);
+    }
+
+    private void updateTripsList() {
+        BusStop departureBusStop = (BusStop) spinnerDepartureStops.getSelectedItem();
+        BusStop destinationBusStop = (BusStop) spinnerDestinationStops.getSelectedItem();
+        //Log.d("getSelectedItem", departureBusStop.getName());
+        //Log.d("getSelectedItem", destinationBusStop.getName());
+        List selectedTrips = selectTrips(departureBusStop, destinationBusStop);
+        sortByTime(selectedTrips, departureBusStop);
+        tripRecyclerAdapter.setContent(selectedTrips, departureBusStop);
+    }
+
+    private void sortByTime(List<BusRoute.Trip> trips, BusStop stop) {
+        Collections.sort(trips, (o1, o2) ->
+                o1.getTimeByBusStop(stop).compareTo(o2.getTimeByBusStop(stop)));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            helper.writeToFile(this, "");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return busStops;
     }
 }

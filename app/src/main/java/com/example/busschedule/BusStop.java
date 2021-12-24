@@ -1,14 +1,12 @@
 package com.example.busschedule;
 
-import android.graphics.Point;
-
 public class BusStop {
     private String name;
-    private Point location;
+    private GeoPoint location;
 
     public BusStop(String n) {
         name = n;
-        location = new Point(0, 0);
+        location = new GeoPoint(0, 0);
     }
 
     public String getName() {

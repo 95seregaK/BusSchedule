@@ -47,4 +47,5 @@ public class RoutePointRecyclerAdapter extends RecyclerView.Adapter<RoutePointRe
             name = itemView.findViewById(R.id.row_bus_stop_name);
         }
     }
+
 }

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TripRecyclerView extends RecyclerView {
+
     public TripRecyclerView(@NonNull Context context) {
         super(context);
     }
@@ -19,4 +20,6 @@ public class TripRecyclerView extends RecyclerView {
     public TripRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
+
 }

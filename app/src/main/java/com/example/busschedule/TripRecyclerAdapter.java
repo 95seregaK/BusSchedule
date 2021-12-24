@@ -14,12 +14,15 @@ public class TripRecyclerAdapter extends RecyclerView.Adapter<TripRecyclerAdapte
 
     private List<BusRoute.Trip> trips;
     private BusStop busStop;
+    private RecyclerView recyclerView;
+    private OnItemClickListener onItemClickListener;
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_row, parent,
                 false);
+        v.setOnClickListener(this::onClick);
         return new TripRecyclerAdapter.ViewHolder(v);
     }
 
@@ -42,6 +45,24 @@ public class TripRecyclerAdapter extends RecyclerView.Adapter<TripRecyclerAdapte
         return trips == null ? 0 : trips.size();
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    public void onClick(final View view) {
+        if (recyclerView != null && onItemClickListener != null) {
+            int itemPosition = recyclerView.getChildLayoutPosition(view);
+            onItemClickListener.onItemClick(view, trips.get(itemPosition));
+
+        }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     static final class ViewHolder extends RecyclerView.ViewHolder {
         final TextView time, routeName;
 
@@ -52,4 +73,9 @@ public class TripRecyclerAdapter extends RecyclerView.Adapter<TripRecyclerAdapte
         }
 
     }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, BusRoute.Trip trip);
+    }
+
 }

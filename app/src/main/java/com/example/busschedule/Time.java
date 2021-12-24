@@ -13,4 +13,8 @@ public class Time {
     public String toString() {
         return hour + ":" + (minute < 9 ? "0" : "") + minute;
     }
+
+    public int compareTo(Time t) {
+        return (hour - t.hour) * 60 + (minute - t.minute);
+    }
 }
