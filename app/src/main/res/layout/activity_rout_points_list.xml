@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".RoutPointsListActivity">
+    tools:context=".activities.RoutPointsListActivity">
 
     <TextView
         android:id="@+id/text_route_name"
@@ -14,10 +14,10 @@
         android:textColor="@color/black"
         android:textSize="@dimen/row_text_size_max" />
 
-    <com.example.busschedule.RoutePointRecyclerView
+    <com.example.busschedule.views.RoutePointRecyclerView
         android:id="@+id/route_points_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </com.example.busschedule.RoutePointRecyclerView>
+    </com.example.busschedule.views.RoutePointRecyclerView>
 </LinearLayout>

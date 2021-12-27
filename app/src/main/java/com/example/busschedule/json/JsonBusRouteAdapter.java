@@ -1,8 +1,8 @@
 package com.example.busschedule.json;
 
-import com.example.busschedule.BusRoute;
-import com.example.busschedule.BusStop;
-import com.example.busschedule.Schedule;
+import com.example.busschedule.route.BusRoute;
+import com.example.busschedule.route.BusStop;
+import com.example.busschedule.route.Schedule;
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;
 

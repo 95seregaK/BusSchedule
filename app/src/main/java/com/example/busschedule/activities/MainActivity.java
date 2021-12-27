@@ -1,4 +1,4 @@
-package com.example.busschedule;
+package com.example.busschedule.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.busschedule.R;
+import com.example.busschedule.adapters.TripRecyclerAdapter;
 import com.example.busschedule.json.JsonHelper;
+import com.example.busschedule.route.BusRoute;
+import com.example.busschedule.route.BusStop;
+import com.example.busschedule.route.Schedule;
 
 import java.io.IOException;
 import java.util.ArrayList;

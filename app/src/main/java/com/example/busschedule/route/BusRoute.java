@@ -1,4 +1,4 @@
-package com.example.busschedule;
+package com.example.busschedule.route;
 
 
 import java.util.ArrayList;

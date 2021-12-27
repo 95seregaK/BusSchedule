@@ -13,8 +13,8 @@
         android:roundIcon="@drawable/ic_bus"
         android:supportsRtl="true"
         android:theme="@style/Theme.BusSchedule">
-        <activity android:name=".RoutPointsListActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.RoutPointsListActivity"></activity>
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

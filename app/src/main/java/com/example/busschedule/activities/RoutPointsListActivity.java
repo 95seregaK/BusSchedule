@@ -1,10 +1,16 @@
-package com.example.busschedule;
+package com.example.busschedule.activities;
 
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.example.busschedule.R;
+import com.example.busschedule.adapters.RoutePointRecyclerAdapter;
+import com.example.busschedule.route.BusRoute;
+import com.example.busschedule.route.Schedule;
+import com.example.busschedule.views.RoutePointRecyclerView;
 
 public class RoutPointsListActivity extends AppCompatActivity {
     RoutePointRecyclerView recyclerView;

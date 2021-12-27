@@ -1,4 +1,4 @@
-package com.example.busschedule;
+package com.example.busschedule.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.busschedule.R;
+import com.example.busschedule.route.BusRoute;
 
 public class RoutePointRecyclerAdapter extends RecyclerView.Adapter<RoutePointRecyclerAdapter.ViewHolder> {
 

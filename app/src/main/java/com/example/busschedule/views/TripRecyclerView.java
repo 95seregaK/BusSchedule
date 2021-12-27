@@ -1,4 +1,4 @@
-package com.example.busschedule;
+package com.example.busschedule.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,6 +1,6 @@
 package com.example.busschedule.json;
 
-import com.example.busschedule.Time;
+import com.example.busschedule.route.Time;
 
 import java.util.List;
 
